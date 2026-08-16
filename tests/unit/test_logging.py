@@ -1,0 +1,63 @@
+import io
+import json
+import logging
+import pytest
+import structlog
+from structlog.contextvars import bind_contextvars, clear_contextvars
+from medbridge.logging_config import configure_logging
+
+@pytest.fixture(autouse=True)
+def reset_logging():
+    yield
+    clear_contextvars()
+    logging.getLogger().handlers.clear()
+    structlog.reset_defaults()
+
+def test_json_log_emission_and_masking():
+    # Capture stdout
+    log_output = io.StringIO()
+    
+    # We manually set up a handler to capture output for the test
+    configure_logging(json_format=True, log_level=logging.INFO)
+    
+    # Replace stdout handler with our StringIO handler
+    handler = logging.StreamHandler(log_output)
+    formatter = logging.getLogger().handlers[0].formatter
+    handler.setFormatter(formatter)
+    logging.getLogger().handlers = [handler]
+    
+    # Also bind some context to test context variable binding
+    bind_contextvars(session_id="12345-abcde", call_name="orchestrator")
+    
+    logger = structlog.get_logger("test_logger")
+    
+    # Emit a log event with a mix of safe and sensitive fields
+    logger.info(
+        "request_received", 
+        message_length=50, 
+        groq_api_key="secret_key_123", 
+        authorization="Bearer xyz",
+        normal_field="value"
+    )
+    
+    log_content = log_output.getvalue()
+    log_data = json.loads(log_content)
+    
+    # Assert base requirements
+    assert log_data["event"] == "request_received"
+    assert "timestamp" in log_data
+    assert log_data["level"] == "info"
+    
+    # Assert context variables are bound
+    assert log_data["session_id"] == "12345-abcde"
+    assert log_data["call_name"] == "orchestrator"
+    
+    # Assert arbitrary kwargs are added
+    assert log_data["message_length"] == 50
+    assert log_data["normal_field"] == "value"
+    
+    # Assert sensitive data is masked
+    assert log_data["groq_api_key"] == "***MASKED***"
+    assert log_data["authorization"] == "***MASKED***"
+    assert "secret_key_123" not in log_content
+    assert "Bearer xyz" not in log_content
