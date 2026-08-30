@@ -1,0 +1,425 @@
+"""
+Unit tests for TASK-13: Deterministic State Projector.
+
+Tests all 6 event projection rules individually, truncation limits,
+deduplication logic, and snapshot reconstruction.
+"""
+import copy
+import pytest
+
+from medbridge.ai.schemas.extractor import DeltaEvent
+from medbridge.api.schemas.enums import EventTypeEnum
+from medbridge.state.projector import StateProjector
+
+
+@pytest.fixture
+def projector() -> StateProjector:
+    return StateProjector()
+
+
+@pytest.fixture
+def empty_snapshot() -> dict:
+    return {}
+
+
+# ---------------------------------------------------------------------------
+# BP_READING
+# ---------------------------------------------------------------------------
+
+class TestBpReading:
+    """Projection rule: Append to recent_bp_readings[], keep last 5."""
+
+    def test_append_single_reading(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.BP_READING,
+            payload={"systolic": 140, "diastolic": 90},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        assert len(result["recent_bp_readings"]) == 1
+        assert result["recent_bp_readings"][0] == {"systolic": 140, "diastolic": 90}
+
+    def test_append_multiple_readings(self, projector, empty_snapshot):
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.BP_READING,
+                payload={"systolic": 130 + i, "diastolic": 80 + i},
+            )
+            for i in range(3)
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        assert len(result["recent_bp_readings"]) == 3
+
+    def test_truncation_at_5(self, projector, empty_snapshot):
+        """After 7 readings, only the last 5 should remain."""
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.BP_READING,
+                payload={"systolic": 120 + i, "diastolic": 70 + i},
+            )
+            for i in range(7)
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        assert len(result["recent_bp_readings"]) == 5
+        # First two should be dropped (i=0,1 gone; i=2..6 remain)
+        assert result["recent_bp_readings"][0] == {"systolic": 122, "diastolic": 72}
+        assert result["recent_bp_readings"][-1] == {"systolic": 126, "diastolic": 76}
+
+    def test_preserves_existing_readings(self, projector):
+        snapshot = {"recent_bp_readings": [{"systolic": 100, "diastolic": 60}]}
+        event = DeltaEvent(
+            event_type=EventTypeEnum.BP_READING,
+            payload={"systolic": 140, "diastolic": 90},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert len(result["recent_bp_readings"]) == 2
+
+
+# ---------------------------------------------------------------------------
+# MEDICATION_ADDED
+# ---------------------------------------------------------------------------
+
+class TestMedicationAdded:
+    """Projection rule: Add to current_medications[] if not present (case-insensitive)."""
+
+    def test_add_new_medication(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.MEDICATION_ADDED,
+            payload={"drug_name": "Amlodipine", "dosage": "5mg", "frequency": "daily"},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        assert len(result["current_medications"]) == 1
+        assert result["current_medications"][0]["drug"] == "Amlodipine"
+        assert result["current_medications"][0]["dosage"] == "5mg"
+        assert result["current_medications"][0]["frequency"] == "daily"
+
+    def test_case_insensitive_deduplication(self, projector, empty_snapshot):
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "Amlodipine", "dosage": "5mg"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "amlodipine", "dosage": "10mg"},
+            ),
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        assert len(result["current_medications"]) == 1
+        # First one wins — keeps original casing and dosage
+        assert result["current_medications"][0]["drug"] == "Amlodipine"
+        assert result["current_medications"][0]["dosage"] == "5mg"
+
+    def test_adds_different_medications(self, projector, empty_snapshot):
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "Amlodipine"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "Lisinopril"},
+            ),
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        assert len(result["current_medications"]) == 2
+
+    def test_defaults_for_optional_fields(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.MEDICATION_ADDED,
+            payload={"drug_name": "Metoprolol"},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        med = result["current_medications"][0]
+        assert med["dosage"] == ""
+        assert med["frequency"] == ""
+
+
+# ---------------------------------------------------------------------------
+# MEDICATION_STOPPED
+# ---------------------------------------------------------------------------
+
+class TestMedicationStopped:
+    """Projection rule: Move from current to discontinued with reason."""
+
+    def test_stop_existing_medication(self, projector):
+        snapshot = {
+            "current_medications": [
+                {"drug": "Amlodipine", "dosage": "5mg", "frequency": "daily"},
+            ]
+        }
+        event = DeltaEvent(
+            event_type=EventTypeEnum.MEDICATION_STOPPED,
+            payload={"drug_name": "Amlodipine", "reason": "Side effects"},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert len(result["current_medications"]) == 0
+        assert len(result["discontinued_medications"]) == 1
+        assert result["discontinued_medications"][0]["drug"] == "Amlodipine"
+        assert result["discontinued_medications"][0]["reason"] == "Side effects"
+
+    def test_case_insensitive_matching(self, projector):
+        snapshot = {
+            "current_medications": [
+                {"drug": "Amlodipine", "dosage": "5mg", "frequency": "daily"},
+            ]
+        }
+        event = DeltaEvent(
+            event_type=EventTypeEnum.MEDICATION_STOPPED,
+            payload={"drug_name": "amlodipine", "reason": "Ineffective"},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert len(result["current_medications"]) == 0
+        assert len(result["discontinued_medications"]) == 1
+
+    def test_stop_nonexistent_medication_is_noop(self, projector):
+        snapshot = {
+            "current_medications": [
+                {"drug": "Lisinopril", "dosage": "10mg", "frequency": "daily"},
+            ]
+        }
+        event = DeltaEvent(
+            event_type=EventTypeEnum.MEDICATION_STOPPED,
+            payload={"drug_name": "Amlodipine", "reason": "N/A"},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert len(result["current_medications"]) == 1
+        assert len(result.get("discontinued_medications", [])) == 0
+
+    def test_stop_preserves_other_medications(self, projector):
+        snapshot = {
+            "current_medications": [
+                {"drug": "Amlodipine", "dosage": "5mg", "frequency": "daily"},
+                {"drug": "Lisinopril", "dosage": "10mg", "frequency": "daily"},
+            ]
+        }
+        event = DeltaEvent(
+            event_type=EventTypeEnum.MEDICATION_STOPPED,
+            payload={"drug_name": "Amlodipine", "reason": "Switched"},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert len(result["current_medications"]) == 1
+        assert result["current_medications"][0]["drug"] == "Lisinopril"
+
+
+# ---------------------------------------------------------------------------
+# SYMPTOM_REPORTED
+# ---------------------------------------------------------------------------
+
+class TestSymptomReported:
+    """Projection rule: Append to symptoms[], deduplicated (case-insensitive)."""
+
+    def test_append_new_symptom(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.SYMPTOM_REPORTED,
+            payload={"symptom": "Headache"},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        assert "Headache" in result["symptoms"]
+
+    def test_case_insensitive_deduplication(self, projector, empty_snapshot):
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.SYMPTOM_REPORTED,
+                payload={"symptom": "Headache"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.SYMPTOM_REPORTED,
+                payload={"symptom": "headache"},
+            ),
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        assert len(result["symptoms"]) == 1
+        assert result["symptoms"][0] == "Headache"  # Original casing preserved
+
+    def test_multiple_distinct_symptoms(self, projector, empty_snapshot):
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.SYMPTOM_REPORTED,
+                payload={"symptom": "Headache"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.SYMPTOM_REPORTED,
+                payload={"symptom": "Dizziness"},
+            ),
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        assert len(result["symptoms"]) == 2
+
+    def test_empty_symptom_ignored(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.SYMPTOM_REPORTED,
+            payload={"symptom": ""},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        assert len(result.get("symptoms", [])) == 0
+
+
+# ---------------------------------------------------------------------------
+# DEMOGRAPHIC
+# ---------------------------------------------------------------------------
+
+class TestDemographic:
+    """Projection rule: Merge into demographics{}, overwrite existing fields."""
+
+    def test_initial_demographic(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.DEMOGRAPHIC,
+            payload={"age": 55, "sex": "male"},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        assert result["demographics"]["age"] == 55
+        assert result["demographics"]["sex"] == "male"
+
+    def test_overwrite_existing_fields(self, projector):
+        snapshot = {"demographics": {"age": 55, "sex": "male"}}
+        event = DeltaEvent(
+            event_type=EventTypeEnum.DEMOGRAPHIC,
+            payload={"age": 56},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert result["demographics"]["age"] == 56
+        assert result["demographics"]["sex"] == "male"  # Preserved
+
+    def test_merge_new_fields(self, projector):
+        snapshot = {"demographics": {"age": 55}}
+        event = DeltaEvent(
+            event_type=EventTypeEnum.DEMOGRAPHIC,
+            payload={"weight_kg": 80, "ethnicity": "Asian"},
+        )
+        result = projector.apply_events(snapshot, [event])
+        assert result["demographics"]["age"] == 55
+        assert result["demographics"]["weight_kg"] == 80
+        assert result["demographics"]["ethnicity"] == "Asian"
+
+
+# ---------------------------------------------------------------------------
+# LAB_RESULT
+# ---------------------------------------------------------------------------
+
+class TestLabResult:
+    """Projection rule: Append to lab_results[], keep last 3 per lab type."""
+
+    def test_append_single_lab(self, projector, empty_snapshot):
+        event = DeltaEvent(
+            event_type=EventTypeEnum.LAB_RESULT,
+            payload={"lab_type": "potassium", "value": 4.5, "unit": "mEq/L"},
+        )
+        result = projector.apply_events(empty_snapshot, [event])
+        assert len(result["lab_results"]) == 1
+
+    def test_truncation_at_3_per_type(self, projector, empty_snapshot):
+        """After 5 potassium results, only the last 3 should remain."""
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.LAB_RESULT,
+                payload={"lab_type": "potassium", "value": 4.0 + i * 0.1, "unit": "mEq/L"},
+            )
+            for i in range(5)
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+        potassium_labs = [
+            l for l in result["lab_results"] if l["lab_type"] == "potassium"
+        ]
+        assert len(potassium_labs) == 3
+        # Last 3 values should be i=2,3,4 → 4.2, 4.3, 4.4
+        assert potassium_labs[0]["value"] == pytest.approx(4.2)
+        assert potassium_labs[-1]["value"] == pytest.approx(4.4)
+
+    def test_different_lab_types_independent(self, projector, empty_snapshot):
+        """Different lab types have independent 3-item limits."""
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.LAB_RESULT,
+                payload={"lab_type": "potassium", "value": 4.0 + i * 0.1, "unit": "mEq/L"},
+            )
+            for i in range(4)
+        ] + [
+            DeltaEvent(
+                event_type=EventTypeEnum.LAB_RESULT,
+                payload={"lab_type": "creatinine", "value": 1.0 + i * 0.1, "unit": "mg/dL"},
+            )
+            for i in range(2)
+        ]
+        result = projector.apply_events(empty_snapshot, events)
+
+        potassium = [l for l in result["lab_results"] if l["lab_type"] == "potassium"]
+        creatinine = [l for l in result["lab_results"] if l["lab_type"] == "creatinine"]
+        assert len(potassium) == 3  # Truncated from 4 → 3
+        assert len(creatinine) == 2  # Under limit, all kept
+
+
+# ---------------------------------------------------------------------------
+# Cross-cutting / Reconstruction
+# ---------------------------------------------------------------------------
+
+class TestReconstruction:
+    """reconstruct_from_events() must match apply_events() from empty snapshot."""
+
+    def test_reconstruct_matches_apply(self, projector):
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.DEMOGRAPHIC,
+                payload={"age": 55, "sex": "male"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.BP_READING,
+                payload={"systolic": 140, "diastolic": 90},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "Amlodipine", "dosage": "5mg"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.SYMPTOM_REPORTED,
+                payload={"symptom": "Headache"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.LAB_RESULT,
+                payload={"lab_type": "potassium", "value": 4.5, "unit": "mEq/L"},
+            ),
+        ]
+
+        from_empty = projector.apply_events({}, events)
+        reconstructed = projector.reconstruct_from_events(events)
+
+        assert from_empty == reconstructed
+
+    def test_reconstruct_complex_scenario(self, projector):
+        """Full lifecycle: add med → add another → stop first → add symptom."""
+        events = [
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "Amlodipine", "dosage": "5mg"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_ADDED,
+                payload={"drug_name": "Lisinopril", "dosage": "10mg"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.MEDICATION_STOPPED,
+                payload={"drug_name": "Amlodipine", "reason": "Edema"},
+            ),
+            DeltaEvent(
+                event_type=EventTypeEnum.SYMPTOM_REPORTED,
+                payload={"symptom": "Ankle swelling"},
+            ),
+        ]
+        result = projector.reconstruct_from_events(events)
+
+        assert len(result["current_medications"]) == 1
+        assert result["current_medications"][0]["drug"] == "Lisinopril"
+        assert len(result["discontinued_medications"]) == 1
+        assert result["discontinued_medications"][0]["drug"] == "Amlodipine"
+        assert result["discontinued_medications"][0]["reason"] == "Edema"
+        assert "Ankle swelling" in result["symptoms"]
+
+    def test_does_not_mutate_original(self, projector):
+        """apply_events must deep-copy the input snapshot."""
+        original = {"demographics": {"age": 55}}
+        event = DeltaEvent(
+            event_type=EventTypeEnum.DEMOGRAPHIC,
+            payload={"age": 56},
+        )
+        result = projector.apply_events(original, [event])
+        assert result["demographics"]["age"] == 56
+        assert original["demographics"]["age"] == 55  # Unchanged

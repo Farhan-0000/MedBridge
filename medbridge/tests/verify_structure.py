@@ -10,8 +10,8 @@ def verify():
         "medbridge/retrieval",
         "medbridge/db",
         "medbridge/ingestion",
-        "frontend",
-        "tests"
+        "medbridge/frontend",
+        "medbridge/tests"
     ]
     
     missing = []
