@@ -177,8 +177,17 @@ class ResilientLLMWrapper:
                         "status": status,
                     },
                 )
-                # 5xx → retry; 4xx (except 429) → don't retry
-                if status == 429 or status >= 500:
+                # 5xx → retry; 429 → retry only if transient (not quota/billing exhaustion); other 4xx → don't retry
+                is_quota_exhausted = False
+                if status == 429:
+                    try:
+                        err_text = e.response.text.lower()
+                        if "quota" in err_text or "credit" in err_text or "billing" in err_text:
+                            is_quota_exhausted = True
+                    except Exception:
+                        pass
+
+                if (status == 429 and not is_quota_exhausted) or status >= 500:
                     if attempt < self.max_retries:
                         # Respect Retry-After header if present
                         retry_after = e.response.headers.get("Retry-After")
@@ -190,7 +199,7 @@ class ResilientLLMWrapper:
                         await asyncio.sleep(delay)
                     continue
                 else:
-                    # Non-retryable client error — break to next provider
+                    # Non-retryable client error or exhausted quota — break to next provider
                     break
 
         return None
@@ -208,8 +217,12 @@ class ResilientLLMWrapper:
         max_tokens: int,
     ) -> str:
         """Send a chat-completions request and return the raw content string."""
+        model_name = self.model
+        if provider["name"] == "openai" and ("llama" in self.model.lower() or not self.model.startswith("gpt")):
+            model_name = "gpt-4o-mini"
+
         payload: dict = {
-            "model": self.model,
+            "model": model_name,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},

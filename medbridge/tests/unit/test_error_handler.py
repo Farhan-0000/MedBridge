@@ -1,0 +1,181 @@
+"""
+Unit Tests for Global Error Handling Middleware (TASK-28, Module M-03).
+
+Constitutional Invariant Non-Negotiable #7:
+Guarantees zero raw 500 errors, structured ErrorResponse schemas, safe clinical
+fallbacks, and strict server-side stack trace containment.
+"""
+import uuid
+import pytest
+from fastapi import FastAPI, HTTPException, status
+from fastapi.testclient import TestClient
+from pydantic import BaseModel, Field
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
+
+from medbridge.api.middleware.error_handler import (
+    SAFE_FALLBACK,
+    database_error_handler,
+    global_exception_handler,
+    http_exception_handler,
+    register_error_handlers,
+    session_not_found_handler,
+    validation_error_handler,
+)
+from medbridge.api.schemas.responses import ErrorResponse
+from medbridge.state.session_manager import SessionNotFoundError
+
+
+class DummyPayload(BaseModel):
+    message: str = Field(..., min_length=2, max_length=100)
+
+
+@pytest.fixture
+def test_app() -> FastAPI:
+    """Create a FastAPI application with registered error handlers and test routes."""
+    app = FastAPI()
+    register_error_handlers(app)
+
+    @app.get("/test/unhandled")
+    async def route_unhandled():
+        raise RuntimeError("Sensitive internal database connection failed: secret_token_123")
+
+    @app.get("/test/session-not-found/{session_id}")
+    async def route_session_not_found(session_id: uuid.UUID):
+        raise SessionNotFoundError(session_id)
+
+    @app.post("/test/validation")
+    async def route_validation(payload: DummyPayload):
+        return {"status": "ok", "message": payload.message}
+
+    @app.get("/test/db-error")
+    async def route_db_error():
+        raise OperationalError(
+            statement="SELECT * FROM sessions",
+            params={},
+            orig=Exception("Connection refused at 127.0.0.1:5432"),
+        )
+
+    @app.get("/test/http-403")
+    async def route_http_403():
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden for this clinical resource.",
+        )
+
+    @app.get("/test/http-429")
+    async def route_http_429():
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Rate limit exceeded.",
+        )
+
+    return app
+
+
+@pytest.fixture
+def client(test_app: FastAPI) -> TestClient:
+    """FastAPI TestClient configured with error handled app."""
+    return TestClient(test_app, raise_server_exceptions=False)
+
+
+class TestGlobalErrorHandler:
+    """Verify behavior of global error handlers and constitutional invariants."""
+
+    def test_unhandled_exception_returns_500_with_safe_fallback(self, client: TestClient) -> None:
+        """Verify unhandled exceptions return 500 with safe clinical fallback message."""
+        response = client.get("/test/unhandled")
+        assert response.status_code == 500
+
+        data = response.json()
+        assert data["error_code"] == "INTERNAL_ERROR"
+        assert data["message"] == "An internal error occurred."
+        assert data["safe_fallback"] == SAFE_FALLBACK
+
+        # Ensure model validation passes against ErrorResponse
+        error_resp = ErrorResponse.model_validate(data)
+        assert error_resp.error_code == "INTERNAL_ERROR"
+
+    def test_unhandled_exception_never_leaks_stack_trace_or_sensitive_data(self, client: TestClient) -> None:
+        """Verify stack traces, python traces, and sensitive strings are masked from response."""
+        response = client.get("/test/unhandled")
+        body_text = response.text
+
+        assert "secret_token_123" not in body_text
+        assert "Traceback" not in body_text
+        assert "RuntimeError" not in body_text
+        assert ".py" not in body_text
+        assert "line " not in body_text
+
+    def test_session_not_found_returns_404_with_structured_error_response(self, client: TestClient) -> None:
+        """Verify SessionNotFoundError returns 404 with SESSION_NOT_FOUND code."""
+        test_id = uuid.uuid4()
+        response = client.get(f"/test/session-not-found/{test_id}")
+        assert response.status_code == 404
+
+        data = response.json()
+        assert data["error_code"] == "SESSION_NOT_FOUND"
+        assert str(test_id) in data["message"]
+        assert data["safe_fallback"] == SAFE_FALLBACK
+
+        error_resp = ErrorResponse.model_validate(data)
+        assert error_resp.error_code == "SESSION_NOT_FOUND"
+
+    def test_validation_error_returns_422_with_field_details(self, client: TestClient) -> None:
+        """Verify Pydantic RequestValidationError returns 422 with field-level details."""
+        # Empty body
+        response = client.post("/test/validation", json={})
+        assert response.status_code == 422
+
+        data = response.json()
+        assert data["error_code"] == "VALIDATION_ERROR"
+        assert data["message"] == "Request validation failed."
+        assert data["safe_fallback"] == SAFE_FALLBACK
+        assert "details" in data
+        assert isinstance(data["details"], list)
+        assert len(data["details"]) > 0
+
+        # String constraint violation (min_length=2)
+        response_short = client.post("/test/validation", json={"message": "a"})
+        assert response_short.status_code == 422
+        short_data = response_short.json()
+        assert short_data["error_code"] == "VALIDATION_ERROR"
+        assert any("message" in str(err.get("loc", [])) for err in short_data["details"])
+
+    def test_database_error_returns_503_database_unavailable(self, client: TestClient) -> None:
+        """Verify database connection errors return 503 DATABASE_UNAVAILABLE."""
+        response = client.get("/test/db-error")
+        assert response.status_code == 503
+
+        data = response.json()
+        assert data["error_code"] == "DATABASE_UNAVAILABLE"
+        assert data["message"] == "Database service is currently unavailable."
+        assert data["safe_fallback"] == SAFE_FALLBACK
+
+        # Ensure no internal DB details leaked
+        assert "Connection refused" not in response.text
+        assert "SELECT * FROM sessions" not in response.text
+
+    def test_http_exceptions_preserve_status_and_format_error_response(self, client: TestClient) -> None:
+        """Verify HTTPExceptions return mapped error_code and standard ErrorResponse."""
+        resp_403 = client.get("/test/http-403")
+        assert resp_403.status_code == 403
+        data_403 = resp_403.json()
+        assert data_403["error_code"] == "FORBIDDEN"
+        assert "forbidden" in data_403["message"]
+        assert data_403["safe_fallback"] == SAFE_FALLBACK
+
+        resp_429 = client.get("/test/http-429")
+        assert resp_429.status_code == 429
+        data_429 = resp_429.json()
+        assert data_429["error_code"] == "RATE_LIMITED"
+        assert "Rate limit" in data_429["message"]
+        assert data_429["safe_fallback"] == SAFE_FALLBACK
+
+    def test_unmatched_route_returns_404_error_response(self, client: TestClient) -> None:
+        """Verify unmatched route (Starlette 404) returns ErrorResponse."""
+        response = client.get("/nonexistent/endpoint/path")
+        assert response.status_code == 404
+
+        data = response.json()
+        assert data["error_code"] == "NOT_FOUND"
+        assert data["safe_fallback"] == SAFE_FALLBACK

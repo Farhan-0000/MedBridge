@@ -26,8 +26,11 @@ def apply_migrations():
     
     yield
     
-    # Run migrations down
-    run_alembic("downgrade", "base")
+    # Run migrations down to test rollback, then re-apply to head for subsequent tests
+    try:
+        run_alembic("downgrade", "base")
+    finally:
+        run_alembic("upgrade", "head")
 
 @pytest.mark.asyncio
 async def test_migrations_and_immutability(apply_migrations):

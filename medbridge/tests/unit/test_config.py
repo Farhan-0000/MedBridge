@@ -3,6 +3,16 @@ import pytest
 from pydantic import ValidationError
 from medbridge.config import Settings, get_settings
 
+
+@pytest.fixture(autouse=True)
+def restore_settings_env_file():
+    """Preserve and restore Settings.model_config and get_settings cache."""
+    orig_env_file = Settings.model_config.get("env_file", ".env")
+    yield
+    Settings.model_config["env_file"] = orig_env_file
+    get_settings.cache_clear()
+
+
 def test_defaults_applied(monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", "test_key")
     monkeypatch.setenv("POSTGRES_PASSWORD", "test_pass")
@@ -23,6 +33,7 @@ def test_defaults_applied(monkeypatch):
     assert settings.QDRANT_URL == "http://127.0.0.1:6333"
     assert settings.CORS_ORIGINS == ["http://localhost:8501"]
 
+
 def test_missing_required_raises(monkeypatch):
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     monkeypatch.delenv("POSTGRES_PASSWORD", raising=False)
@@ -34,6 +45,7 @@ def test_missing_required_raises(monkeypatch):
     errors = str(exc_info.value)
     assert "GROQ_API_KEY" in errors or "groq_api_key" in errors
     assert "POSTGRES_PASSWORD" in errors or "postgres_password" in errors
+
 
 def test_type_coercion(monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", "test_key")
@@ -48,6 +60,7 @@ def test_type_coercion(monkeypatch):
     assert settings.LLM_TEMPERATURE_GATES == 0.5
     assert settings.LLM_MAX_TOKENS_GATES == 1024
     assert settings.CORS_ORIGINS == ["http://test.com"]
+
 
 def test_singleton_behavior(monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", "test_key")

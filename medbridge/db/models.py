@@ -68,7 +68,10 @@ class ClinicalEvent(Base):
 
     event_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("sessions.session_id", ondelete="CASCADE"), nullable=False, index=True)
-    event_type: Mapped[EventTypeEnum] = mapped_column(Enum(EventTypeEnum, name="event_type_enum"), nullable=False)
+    event_type: Mapped[EventTypeEnum] = mapped_column(
+        Enum(EventTypeEnum, name="event_type_enum", values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+    )
     payload: Mapped[Dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
@@ -92,11 +95,20 @@ class AuditLog(Base):
     audit_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("sessions.session_id", ondelete="CASCADE"), nullable=False, index=True)
     request_message: Mapped[str] = mapped_column(Text, nullable=False)
-    gate_1_action: Mapped[Gate1ActionEnum | None] = mapped_column(Enum(Gate1ActionEnum, name="gate_1_action_enum"), nullable=True)
+    gate_1_action: Mapped[Gate1ActionEnum | None] = mapped_column(
+        Enum(Gate1ActionEnum, name="gate_1_action_enum", values_callable=lambda x: [e.value for e in x]),
+        nullable=True,
+    )
     gate_1_rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
-    gate_2_action: Mapped[Gate2ActionEnum | None] = mapped_column(Enum(Gate2ActionEnum, name="gate_2_action_enum"), nullable=True)
+    gate_2_action: Mapped[Gate2ActionEnum | None] = mapped_column(
+        Enum(Gate2ActionEnum, name="gate_2_action_enum", values_callable=lambda x: [e.value for e in x]),
+        nullable=True,
+    )
     gate_2_rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
-    final_action: Mapped[FinalActionEnum] = mapped_column(Enum(FinalActionEnum, name="final_action_enum"), nullable=False)
+    final_action: Mapped[FinalActionEnum] = mapped_column(
+        Enum(FinalActionEnum, name="final_action_enum", values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+    )
     evidence_chunk_ids: Mapped[List[str] | None] = mapped_column(ARRAY(Text), nullable=True, default=list)
     response_text: Mapped[str] = mapped_column(Text, nullable=False)
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -112,7 +124,10 @@ class MessageHistory(Base):
     session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("sessions.session_id", ondelete="CASCADE"), nullable=False, index=True)
     role: Mapped[str] = mapped_column(String(10), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    action: Mapped[FinalActionEnum | None] = mapped_column(Enum(FinalActionEnum, name="final_action_enum"), nullable=True)
+    action: Mapped[FinalActionEnum | None] = mapped_column(
+        Enum(FinalActionEnum, name="final_action_enum", values_callable=lambda x: [e.value for e in x]),
+        nullable=True,
+    )
     citations: Mapped[List[Dict[str, Any]] | None] = mapped_column(JSONB, nullable=True, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 

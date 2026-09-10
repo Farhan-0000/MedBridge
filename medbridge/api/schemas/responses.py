@@ -5,7 +5,7 @@ Defines validated response schemas for all outbound API responses.
 All schemas follow Technical Specification Part II §5.1.
 """
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -80,4 +80,8 @@ class ErrorResponse(BaseModel):
     safe_fallback: str = Field(
         ...,
         description="Pre-vetted clinically safe fallback message for the patient",
+    )
+    details: Optional[Any] = Field(
+        default=None,
+        description="Optional field-level or contextual error details",
     )
