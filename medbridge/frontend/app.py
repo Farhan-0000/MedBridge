@@ -12,8 +12,15 @@ Assembles:
 
 Technical Specification Part I §3.2, §3.3.
 """
+from pathlib import Path
+import sys
 from typing import Optional
 import uuid
+
+# Ensure repository root is on sys.path when launched via standalone streamlit CLI
+repo_root = str(Path(__file__).resolve().parent.parent.parent)
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
 
 import structlog
 import streamlit as st
