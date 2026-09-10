@@ -1,0 +1,696 @@
+[
+  {
+    "id": "ANS-001",
+    "subset": "complete_context_answer",
+    "query": "I am a 52-year-old male with type 2 diabetes. My BP is consistently 145/92 mmHg on Lisinopril 10mg. What does the guideline recommend for my blood pressure goal?",
+    "patient_snapshot": {
+      "demographics": {"age": 52, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 145, "dbp": 92}],
+      "current_medications": [{"drug": "Lisinopril", "dosage": "10mg"}],
+      "symptoms": ["type 2 diabetes"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Patient has confirmed stage 2 HTN with diabetes; target is <130/80 mmHg and dual therapy is indicated.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-002",
+    "subset": "complete_context_answer",
+    "query": "I am 65 years old, newly diagnosed with BP 155/95 mmHg, no diabetes or kidney disease, not taking any medications. What initial drug treatment is recommended?",
+    "patient_snapshot": {
+      "demographics": {"age": 65, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 155, "dbp": 95}],
+      "current_medications": [],
+      "symptoms": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Stage 2 hypertension with BP > 20/10 mmHg above goal recommends starting with 2 first-line agents of different classes.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-003",
+    "subset": "complete_context_answer",
+    "query": "I am 58 with chronic kidney disease stage 3 and proteinuria (eGFR 48). My BP is 138/88 on Amlodipine 5mg. Which class of medication is preferred for kidney protection?",
+    "patient_snapshot": {
+      "demographics": {"age": 58, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 138, "dbp": 88}],
+      "current_medications": [{"drug": "Amlodipine", "dosage": "5mg"}],
+      "symptoms": ["chronic kidney disease", "proteinuria"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "KDIGO 2024"],
+    "clinical_rationale": "In CKD with albuminuria, ACE inhibitor or ARB is strongly recommended as first-line therapy for renal protection.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-004",
+    "subset": "complete_context_answer",
+    "query": "I am a 45-year-old African American male with BP 148/94 mmHg, no kidney disease, taking no meds. Which first-line classes work best?",
+    "patient_snapshot": {
+      "demographics": {"age": 45, "sex": "male", "race": "Black"},
+      "recent_bp_readings": [{"sbp": 148, "dbp": 94}],
+      "current_medications": [],
+      "symptoms": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "For Black adults with hypertension but without CKD, initial therapy should include a thiazide-type diuretic or CCB.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-005",
+    "subset": "complete_context_answer",
+    "query": "I am 78 years old. My systolic BP is 152 mmHg but my diastolic is only 74 mmHg. I take no medications. What is this condition called and should it be treated?",
+    "patient_snapshot": {
+      "demographics": {"age": 78, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 152, "dbp": 74}],
+      "current_medications": [],
+      "symptoms": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Isolated systolic hypertension in the elderly is treated to target SBP < 130-139 mmHg while avoiding severe DBP reduction < 65-70.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-006",
+    "subset": "complete_context_answer",
+    "query": "I am 50 years old with BP 132/84 mmHg, non-smoker, no diabetes, ASCVD 10-year risk is 4%. Does guideline recommend medication or lifestyle changes?",
+    "patient_snapshot": {
+      "demographics": {"age": 50, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 132, "dbp": 84}],
+      "current_medications": [],
+      "symptoms": ["low ASCVD risk"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Stage 1 HTN with 10-year ASCVD risk < 10% recommends non-pharmacologic lifestyle therapy with reassessment in 3-6 months.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-007",
+    "subset": "complete_context_answer",
+    "query": "I am 54 on Lisinopril 20mg and Amlodipine 10mg daily. My BP is still 146/92. What is the standard third medication class to add?",
+    "patient_snapshot": {
+      "demographics": {"age": 54, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 146, "dbp": 92}],
+      "current_medications": [{"drug": "Lisinopril", "dosage": "20mg"}, {"drug": "Amlodipine", "dosage": "10mg"}],
+      "symptoms": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Standard triple therapy comprises an RAS blocker (ACEi/ARB), a CCB, and a thiazide-like diuretic (e.g. Chlorthalidone or Indapamide).",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-008",
+    "subset": "complete_context_answer",
+    "query": "I take Losartan 50mg daily. My potassium blood test came back at 4.6 mEq/L and creatinine 0.9. Is this potassium level normal on Losartan?",
+    "patient_snapshot": {
+      "demographics": {"age": 60, "sex": "female"},
+      "current_medications": [{"drug": "Losartan", "dosage": "50mg"}],
+      "lab_results": [{"lab_type": "potassium", "value": "4.6 mEq/L"}, {"lab_type": "creatinine", "value": "0.9 mg/dL"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Serum potassium of 4.6 mEq/L is within normal range (3.5 - 5.0 mEq/L) on ARB therapy.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-009",
+    "subset": "complete_context_answer",
+    "query": "I am 62 on maximum doses of Valsartan, Amlodipine, and Chlorthalidone, but BP remains 144/90. What is the definition of resistant hypertension?",
+    "patient_snapshot": {
+      "demographics": {"age": 62, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 144, "dbp": 90}],
+      "current_medications": [{"drug": "Valsartan"}, {"drug": "Amlodipine"}, {"drug": "Chlorthalidone"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "BP remaining above goal despite adherence to three optimally dosed antihypertensive agents of different classes (including a diuretic) defines resistant hypertension.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-010",
+    "subset": "complete_context_answer",
+    "query": "For resistant hypertension on triple therapy, which 4th-line drug is recommended by guidelines if potassium is normal?",
+    "patient_snapshot": {
+      "demographics": {"age": 64, "sex": "male"},
+      "current_medications": [{"drug": "Valsartan"}, {"drug": "Amlodipine"}, {"drug": "Hydrochlorothiazide"}],
+      "lab_results": [{"lab_type": "potassium", "value": "4.2 mEq/L"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Spironolactone (mineralocorticoid receptor antagonist) is the preferred 4th-line agent for resistant hypertension if eGFR > 45 and K+ < 4.5.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-011",
+    "subset": "complete_context_answer",
+    "query": "I am 48 years old, no other diseases, BP 142/90 on no meds. Does ESC/ESH 2024 recommend single-pill combination therapy as first step?",
+    "patient_snapshot": {
+      "demographics": {"age": 48, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 142, "dbp": 90}],
+      "current_medications": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ESC/ESH 2024"],
+    "clinical_rationale": "ESC/ESH guidelines strongly favor initiating treatment with a single-pill two-drug combination (typically ACEi/ARB + CCB or diuretic) to improve adherence.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-012",
+    "subset": "complete_context_answer",
+    "query": "I have coronary artery disease with past heart attack 2 years ago. My BP is 136/86. Which class of blood pressure drug is specifically recommended post-MI?",
+    "patient_snapshot": {
+      "demographics": {"age": 63, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 136, "dbp": 86}],
+      "symptoms": ["prior myocardial infarction", "coronary artery disease"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Beta-blockers (and ACEi/ARB) are guideline-directed medical therapy with proven mortality benefit post-myocardial infarction.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-013",
+    "subset": "complete_context_answer",
+    "query": "I take Amlodipine 10mg daily and my BP is well controlled at 122/78 mmHg, but my ankles are swollen. Is ankle edema a known side effect?",
+    "patient_snapshot": {
+      "demographics": {"age": 55, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 122, "dbp": 78}],
+      "current_medications": [{"drug": "Amlodipine", "dosage": "10mg"}],
+      "symptoms": ["peripheral ankle edema"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["MedlinePlus", "AHA/ACC 2025"],
+    "clinical_rationale": "Dose-dependent peripheral ankle edema is a common vasodilatory adverse effect of dihydropyridine calcium channel blockers like Amlodipine.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-014",
+    "subset": "complete_context_answer",
+    "query": "I started Lisinopril 20mg 3 weeks ago and developed a persistent, dry, hacking cough without fever. Is this an adverse effect of ACE inhibitors?",
+    "patient_snapshot": {
+      "demographics": {"age": 51, "sex": "female"},
+      "current_medications": [{"drug": "Lisinopril", "dosage": "20mg"}],
+      "symptoms": ["dry cough"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Bradykinin accumulation from ACE inhibitors causes dry cough in 5-20% of patients; switching to an ARB resolves the cough.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-015",
+    "subset": "complete_context_answer",
+    "query": "I am 70 years old with BP 148/88. Does the AHA/ACC 2025 guideline recommend treating adults over 65 to a systolic target below 130 mmHg?",
+    "patient_snapshot": {
+      "demographics": {"age": 70, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 148, "dbp": 88}],
+      "current_medications": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "For non-institutionalized ambulatory community-dwelling older adults (age >= 65), target SBP is <130 mmHg if well tolerated.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-016",
+    "subset": "complete_context_answer",
+    "query": "I am a 56-year-old male with gout and high blood pressure (144/92). Why are thiazide diuretics used with caution in patients with gout?",
+    "patient_snapshot": {
+      "demographics": {"age": 56, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 144, "dbp": 92}],
+      "symptoms": ["gout"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Thiazide diuretics increase serum uric acid levels by competitive inhibition of uric acid secretion in the renal tubules, precipitating gout attacks.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-017",
+    "subset": "complete_context_answer",
+    "query": "I take Metoprolol Tartrate 50mg twice daily for BP, but it's still 146/92. Why is atenolol or metoprolol not considered preferred first-line monotherapy for uncomplicated hypertension?",
+    "patient_snapshot": {
+      "demographics": {"age": 53, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 146, "dbp": 92}],
+      "current_medications": [{"drug": "Metoprolol Tartrate", "dosage": "50mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Beta-blockers have demonstrated inferior stroke and cardiovascular event prevention compared to ACEi/ARBs, CCBs, and thiazides in the absence of compelling indications.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-018",
+    "subset": "complete_context_answer",
+    "query": "My blood pressure at home is 126/78 mmHg, but in the doctor's office it is always 148/92 mmHg. What is this phenomenon called?",
+    "patient_snapshot": {
+      "demographics": {"age": 42, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 126, "dbp": 78, "setting": "home"}, {"sbp": 148, "dbp": 92, "setting": "clinic"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "White-coat hypertension (elevated in office but normal on ambulatory or home monitoring) requires out-of-office confirmation to avoid overtreatment.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-019",
+    "subset": "complete_context_answer",
+    "query": "My office blood pressure is 128/78 mmHg, but my 24-hour ambulatory monitoring averages 142/88 mmHg. What is this called and does it carry cardiovascular risk?",
+    "patient_snapshot": {
+      "demographics": {"age": 49, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 128, "dbp": 78, "setting": "clinic"}, {"sbp": 142, "dbp": 88, "setting": "24h_abpm"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Masked hypertension carries cardiovascular risk comparable to sustained hypertension and requires pharmacotherapy.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-020",
+    "subset": "complete_context_answer",
+    "query": "I am a 61-year-old male with heart failure with reduced ejection fraction (HFrEF 32%) and BP 138/86. Which medication classes form guideline-directed medical therapy?",
+    "patient_snapshot": {
+      "demographics": {"age": 61, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 138, "dbp": 86}],
+      "symptoms": ["heart failure with reduced ejection fraction", "LVEF 32%"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Guideline-directed medical therapy for HFrEF includes ARNI/ACEi, beta-blocker (carvedilol/metoprolol succinate), MRA (spironolactone), and SGLT2 inhibitor.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-021",
+    "subset": "complete_context_answer",
+    "query": "I am 47 on Enalapril 10mg. How does dietary sodium restriction impact blood pressure according to AHA guidelines?",
+    "patient_snapshot": {
+      "demographics": {"age": 47, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 134, "dbp": 84}],
+      "current_medications": [{"drug": "Enalapril", "dosage": "10mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Reducing sodium intake to < 1,500 - 2,300 mg/day typically lowers systolic blood pressure by 5-6 mmHg in hypertensive individuals.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-022",
+    "subset": "complete_context_answer",
+    "query": "I take Chlorthalidone 25mg daily. My lab results show serum sodium 131 mEq/L (normal 135-145). Is hyponatremia a recognized side effect?",
+    "patient_snapshot": {
+      "demographics": {"age": 67, "sex": "female"},
+      "current_medications": [{"drug": "Chlorthalidone", "dosage": "25mg"}],
+      "lab_results": [{"lab_type": "sodium", "value": "131 mEq/L"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Thiazide and thiazide-like diuretics promote renal sodium excretion and can cause hyponatremia and hypokalemia.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-023",
+    "subset": "complete_context_answer",
+    "query": "I am 53 with BP 152/94 on no meds. My doctor discussed single-pill combination vs two separate pills. Does single-pill combination improve long-term adherence?",
+    "patient_snapshot": {
+      "demographics": {"age": 53, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 152, "dbp": 94}],
+      "current_medications": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ESC/ESH 2024", "AHA/ACC 2025"],
+    "clinical_rationale": "Fixed-dose single-pill combinations significantly improve patient adherence, reduce pill burden, and achieve faster blood pressure control.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-024",
+    "subset": "complete_context_answer",
+    "query": "I am 59 with stage 2 hypertension. What is the recommended follow-up interval after initiating a new antihypertensive drug?",
+    "patient_snapshot": {
+      "demographics": {"age": 59, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 156, "dbp": 96}],
+      "current_medications": [{"drug": "Telmisartan", "dosage": "40mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Follow-up evaluation of BP control and electrolyte/renal function is recommended at 2 to 4 weeks after initiation or titration.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-025",
+    "subset": "complete_context_answer",
+    "query": "I take Lisinopril 20mg daily. My doctor also prescribed Losartan 50mg. Is it recommended to combine an ACE inhibitor and an ARB together?",
+    "patient_snapshot": {
+      "demographics": {"age": 64, "sex": "male"},
+      "current_medications": [{"drug": "Lisinopril", "dosage": "20mg"}, {"drug": "Losartan", "dosage": "50mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Dual renin-angiotensin system blockade (combining ACEi and ARB) is harmful and contraindicated due to heightened risk of hyperkalemia, syncope, and acute kidney injury.",
+    "contraindications": ["Avoid dual RAS blockade"]
+  },
+  {
+    "id": "ANS-026",
+    "subset": "complete_context_answer",
+    "query": "I am 51 years old on Hydrochlorothiazide 25mg and my BP is 134/86. My uric acid level is 8.5 mg/dL. If I switch meds, which ARB has mild uric acid-lowering properties?",
+    "patient_snapshot": {
+      "demographics": {"age": 51, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 134, "dbp": 86}],
+      "current_medications": [{"drug": "Hydrochlorothiazide", "dosage": "25mg"}],
+      "lab_results": [{"lab_type": "uric_acid", "value": "8.5 mg/dL"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ESC/ESH 2024", "AHA/ACC 2025"],
+    "clinical_rationale": "Losartan has a unique uricosuric effect mediated by URAT1 inhibition, lowering serum uric acid levels.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-027",
+    "subset": "complete_context_answer",
+    "query": "I am 68 with isolated systolic hypertension (154/72). Why is Chlorthalidone preferred over Hydrochlorothiazide in major guideline trials?",
+    "patient_snapshot": {
+      "demographics": {"age": 68, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 154, "dbp": 72}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Chlorthalidone has a longer half-life (40-60 hours) and proven cardiovascular reduction evidence in trials such as ALLHAT and SHEP.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-028",
+    "subset": "complete_context_answer",
+    "query": "I am 57 on Diltiazem CD 240mg daily for BP (132/82). Which category of calcium channel blocker is Diltiazem and does it lower heart rate?",
+    "patient_snapshot": {
+      "demographics": {"age": 57, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 132, "dbp": 82}],
+      "current_medications": [{"drug": "Diltiazem CD", "dosage": "240mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Diltiazem is a non-dihydropyridine calcium channel blocker that acts on cardiac nodal tissue to reduce heart rate and myocardial contractility.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-029",
+    "subset": "complete_context_answer",
+    "query": "I am 46 with migraine headaches and high blood pressure (142/92). Can a beta-blocker treat both conditions simultaneously?",
+    "patient_snapshot": {
+      "demographics": {"age": 46, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 142, "dbp": 92}],
+      "symptoms": ["migraine headaches"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Beta-blockers (such as Propranolol, Metoprolol, or Timolol) serve dual roles for migraine prophylaxis and blood pressure reduction.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-030",
+    "subset": "complete_context_answer",
+    "query": "I am 63 with benign prostatic hyperplasia (BPH) and hypertension (145/90). Are alpha-1 blockers like Doxazosin considered first-line for hypertension alone?",
+    "patient_snapshot": {
+      "demographics": {"age": 63, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 145, "dbp": 90}],
+      "symptoms": ["benign prostatic hyperplasia"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Alpha-1 blockers are not recommended as first-line monotherapy for hypertension due to ALLHAT findings of increased heart failure risk, but may be used as add-on therapy in men with BPH.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-031",
+    "subset": "complete_context_answer",
+    "query": "My BP is 135/85 mmHg. I drink 4 beers every night. How much does alcohol moderation lower blood pressure according to guidelines?",
+    "patient_snapshot": {
+      "demographics": {"age": 44, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 135, "dbp": 85}],
+      "symptoms": ["excessive alcohol consumption"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Limiting alcohol to <= 2 drinks/day for men and <= 1 drink/day for women reduces systolic BP by approximately 4 mmHg.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-032",
+    "subset": "complete_context_answer",
+    "query": "I have type 2 diabetes and hypertension, BP 136/84 on Ramipril 10mg. What are the benefits of adding an SGLT2 inhibitor for cardiorenal protection?",
+    "patient_snapshot": {
+      "demographics": {"age": 58, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 136, "dbp": 84}],
+      "current_medications": [{"drug": "Ramipril", "dosage": "10mg"}],
+      "symptoms": ["type 2 diabetes"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ESC/ESH 2024", "ADA 2025"],
+    "clinical_rationale": "SGLT2 inhibitors confer modest blood pressure reduction (3-5 mmHg), reduce heart failure hospitalizations, and slow progression of diabetic kidney disease.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-033",
+    "subset": "complete_context_answer",
+    "query": "I take Spironolactone 25mg for resistant hypertension. My eGFR is 55 mL/min. Why is routine monitoring of serum potassium and creatinine essential?",
+    "patient_snapshot": {
+      "demographics": {"age": 66, "sex": "male"},
+      "current_medications": [{"drug": "Spironolactone", "dosage": "25mg"}],
+      "lab_results": [{"lab_type": "eGFR", "value": "55 mL/min"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "MRAs can induce life-threatening hyperkalemia and acute decline in renal function, requiring potassium/creatinine checks at 1, 4, and 12 weeks after initiation.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-034",
+    "subset": "complete_context_answer",
+    "query": "I am 55 on Olmesartan 40mg. What is the effect of aerobic exercise on resting blood pressure in hypertensive patients?",
+    "patient_snapshot": {
+      "demographics": {"age": 55, "sex": "male"},
+      "current_medications": [{"drug": "Olmesartan", "dosage": "40mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Structured aerobic exercise (90-150 min/week at 65-75% HR reserve) lowers systolic BP by 5-8 mmHg.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-035",
+    "subset": "complete_context_answer",
+    "query": "I am 72 on Amlodipine 5mg and Valsartan 80mg with BP 124/76. I feel dizzy when standing up. What should be checked to rule out orthostatic hypotension?",
+    "patient_snapshot": {
+      "demographics": {"age": 72, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 124, "dbp": 76}],
+      "current_medications": [{"drug": "Amlodipine", "dosage": "5mg"}, {"drug": "Valsartan", "dosage": "80mg"}],
+      "symptoms": ["postural dizziness"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Orthostatic vitals (BP and HR measured lying and at 1 and 3 minutes standing; drop of >=20 SBP or >=10 DBP defines orthostatic hypotension).",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-036",
+    "subset": "complete_context_answer",
+    "query": "I am 52 with stage 1 hypertension (136/86) and chronic stable angina. Which first-line antihypertensive classes are optimal for angina relief?",
+    "patient_snapshot": {
+      "demographics": {"age": 52, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 136, "dbp": 86}],
+      "symptoms": ["chronic stable angina"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Beta-blockers or calcium channel blockers (dihydropyridine or non-dihydropyridine) are first-line to reduce myocardial oxygen demand and relieve angina.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-037",
+    "subset": "complete_context_answer",
+    "query": "I take Lisinopril 10mg. Can ibuprofen or naproxen (NSAIDs) raise blood pressure and counteract ACE inhibitors?",
+    "patient_snapshot": {
+      "demographics": {"age": 50, "sex": "male"},
+      "current_medications": [{"drug": "Lisinopril", "dosage": "10mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "NSAIDs inhibit renal prostaglandins, causing sodium/water retention and blunting the antihypertensive effects of ACE inhibitors, ARBs, and diuretics.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-038",
+    "subset": "complete_context_answer",
+    "query": "I am 60 years old with BP 150/92 on no medications. According to AHA/ACC 2025, how is Stage 2 hypertension defined?",
+    "patient_snapshot": {
+      "demographics": {"age": 60, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 150, "dbp": 92}],
+      "current_medications": []
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Stage 2 hypertension is defined as SBP >= 140 mmHg or DBP >= 90 mmHg based on the average of >= 2 readings on >= 2 occasions.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-039",
+    "subset": "complete_context_answer",
+    "query": "What is the DASH eating plan and what food groups does it emphasize to lower blood pressure?",
+    "patient_snapshot": {
+      "demographics": {"age": 45, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 136, "dbp": 88}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "DASH diet emphasizes fruits, vegetables, whole grains, lean poultry, fish, nuts, and low-fat dairy while reducing saturated fats and sweets.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-040",
+    "subset": "complete_context_answer",
+    "query": "I am 64 with BP 142/90 on Amlodipine 5mg. My serum potassium is 3.2 mEq/L. Which antihypertensive class can help conserve potassium?",
+    "patient_snapshot": {
+      "demographics": {"age": 64, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 142, "dbp": 90}],
+      "current_medications": [{"drug": "Amlodipine", "dosage": "5mg"}],
+      "lab_results": [{"lab_type": "potassium", "value": "3.2 mEq/L"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "ACE inhibitors, ARBs, or potassium-sparing diuretics (Triamterene, Amiloride, Spironolactone) decrease renal potassium excretion and elevate serum potassium.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-041",
+    "subset": "complete_context_answer",
+    "query": "I am 56 on Losartan 100mg with BP 138/88. Does increasing dietary potassium through foods like bananas and leafy greens help lower blood pressure in patients with normal kidney function?",
+    "patient_snapshot": {
+      "demographics": {"age": 56, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 138, "dbp": 88}],
+      "current_medications": [{"drug": "Losartan", "dosage": "100mg"}],
+      "lab_results": [{"lab_type": "eGFR", "value": "85 mL/min"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "High dietary potassium intake (3,500-5,000 mg/day) lowers blood pressure by promoting natriuresis and vasodilatation in adults with normal renal function.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-042",
+    "subset": "complete_context_answer",
+    "query": "I am 53 with BP 146/92 on no meds. My doctor ordered a home blood pressure monitor. What is the recommended protocol for taking home readings?",
+    "patient_snapshot": {
+      "demographics": {"age": 53, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 146, "dbp": 92}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Protocol: 5 minutes quiet rest seated with back supported, cuff at heart level, no talking/caffeine/smoking, take 2 readings 1 min apart in morning and evening for 7 days.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-043",
+    "subset": "complete_context_answer",
+    "query": "I am 69 with systolic hypertension 150/76 on Hydrochlorothiazide 25mg. What is the target systolic blood pressure recommended by AHA 2025?",
+    "patient_snapshot": {
+      "demographics": {"age": 69, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 150, "dbp": 76}],
+      "current_medications": [{"drug": "Hydrochlorothiazide", "dosage": "25mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Target SBP is <130 mmHg for ambulatory community-dwelling older adults, provided treatment is well-tolerated without symptoms of hypoperfusion.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-044",
+    "subset": "complete_context_answer",
+    "query": "I am 58 on Lisinopril 20mg and Amlodipine 5mg with BP 126/78. How often should a stable hypertensive patient have clinic follow-up visits?",
+    "patient_snapshot": {
+      "demographics": {"age": 58, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 126, "dbp": 78}],
+      "current_medications": [{"drug": "Lisinopril", "dosage": "20mg"}, {"drug": "Amlodipine", "dosage": "5mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Once blood pressure is at goal and stable, follow-up intervals of 3 to 6 months are generally recommended.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-045",
+    "subset": "complete_context_answer",
+    "query": "I am 54 on Valsartan 160mg. What are the signs of angioedema and does it happen with ARBs?",
+    "patient_snapshot": {
+      "demographics": {"age": 54, "sex": "female"},
+      "current_medications": [{"drug": "Valsartan", "dosage": "160mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Angioedema presents with acute swelling of the face, lips, tongue, or airway; it is rare with ARBs (<0.1%) but still requires immediate medical discontinuation.",
+    "contraindications": []
+  },
+  {
+    "id": "ANS-046",
+    "subset": "complete_context_answer",
+    "query": "I am 62 on Amlodipine 10mg with BP 144/90. Can adding an ARB like Telmisartan provide synergistic blood pressure reduction?",
+    "patient_snapshot": {
+      "demographics": {"age": 62, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 144, "dbp": 90}],
+      "current_medications": [{"drug": "Amlodipine", "dosage": "10mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Combining a CCB (Amlodipine) with an ARB (Telmisartan) provides complementary vasodilatory mechanisms and reduces the incidence of CCB-induced peripheral edema.",
+    "contraindications": []
+  }
+]

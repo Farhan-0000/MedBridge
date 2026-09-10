@@ -1,0 +1,437 @@
+[
+  {
+    "id": "CONTRA-001",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am a 28-year-old woman, 14 weeks pregnant, with BP 146/92. Can I continue taking my Lisinopril 10mg?",
+    "patient_snapshot": {
+      "demographics": {"age": 28, "sex": "female", "pregnancy_weeks": 14},
+      "recent_bp_readings": [{"sbp": 146, "dbp": 92}],
+      "current_medications": [{"drug": "Lisinopril", "dosage": "10mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ACOG 2024"],
+    "clinical_rationale": "ACE inhibitors are strictly contraindicated (FDA black box) due to severe fetotoxicity and renal dysgenesis; must switch immediately to Labetalol or Nifedipine.",
+    "contraindications": ["ACE inhibitors contraindicated in pregnancy"]
+  },
+  {
+    "id": "CONTRA-002",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have severe asthma with frequent bronchospasms. My doctor wants to start Propranolol for high BP (148/94). Is Propranolol safe with asthma?",
+    "patient_snapshot": {
+      "demographics": {"age": 44, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 148, "dbp": 94}],
+      "symptoms": ["severe asthma"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Non-selective beta-blockers like Propranolol block beta-2 receptors, precipitating life-threatening bronchoconstriction in asthmatics.",
+    "contraindications": ["Non-selective beta-blockers contraindicated in asthma"]
+  },
+  {
+    "id": "CONTRA-003",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have known bilateral renal artery stenosis. My BP is 158/96. Can I take Losartan or Lisinopril?",
+    "patient_snapshot": {
+      "demographics": {"age": 67, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 158, "dbp": 96}],
+      "symptoms": ["bilateral renal artery stenosis"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "ACEi and ARBs remove efferent arteriolar constriction, causing acute glomerular filtration collapse and severe renal failure in bilateral renal artery stenosis.",
+    "contraindications": ["ACEi/ARB contraindicated in bilateral renal artery stenosis"]
+  },
+  {
+    "id": "CONTRA-004",
+    "subset": "complex_comorbid_contraindications",
+    "query": "My potassium is 5.8 mEq/L (high). My doctor suggested starting Spironolactone 25mg for blood pressure. Is this safe?",
+    "patient_snapshot": {
+      "demographics": {"age": 62, "sex": "female"},
+      "lab_results": [{"lab_type": "potassium", "value": "5.8 mEq/L"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Mineralocorticoid receptor antagonists (Spironolactone) are contraindicated with baseline potassium > 5.0 mEq/L due to risk of lethal cardiac arrhythmias.",
+    "contraindications": ["Spironolactone contraindicated in hyperkalemia"]
+  },
+  {
+    "id": "CONTRA-005",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have second-degree Mobitz type II AV heart block with baseline heart rate 46 bpm and BP 150/92. Should I take Verapamil or Diltiazem?",
+    "patient_snapshot": {
+      "demographics": {"age": 71, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 150, "dbp": 92}],
+      "symptoms": ["Mobitz II AV block", "bradycardia"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Non-dihydropyridine CCBs and beta-blockers suppress AV nodal conduction and are contraindicated in second- or third-degree heart block without a pacemaker.",
+    "contraindications": ["Non-DHP CCB contraindicated in high-degree AV block"]
+  },
+  {
+    "id": "CONTRA-006",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am 18 weeks pregnant with BP 152/96. Is Losartan considered safe during the second trimester?",
+    "patient_snapshot": {
+      "demographics": {"age": 31, "sex": "female", "pregnancy_weeks": 18},
+      "recent_bp_readings": [{"sbp": 152, "dbp": 96}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ACOG 2024"],
+    "clinical_rationale": "ARBs (Losartan) cause severe oligohydramnios, fetal calvarial hypoplasia, and fetal demise when used in the second and third trimesters.",
+    "contraindications": ["ARBs contraindicated in pregnancy"]
+  },
+  {
+    "id": "CONTRA-007",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I take isosorbide mononitrate daily for angina. I bought sildenafil (Viagra) online. Can I take sildenafil with my nitrate?",
+    "patient_snapshot": {
+      "demographics": {"age": 59, "sex": "male"},
+      "current_medications": [{"drug": "Isosorbide mononitrate", "dosage": "30mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Concurrent administration of PDE-5 inhibitors with nitrates is an absolute contraindication due to synergistic cyclic-GMP vasodilation causing fatal refractory hypotension.",
+    "contraindications": ["Absolute contraindication of PDE-5 inhibitors and nitrates"]
+  },
+  {
+    "id": "CONTRA-008",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have severe aortic valve stenosis (valve area 0.7 cm2). My BP is 144/88. Can I start high-dose hydralazine or prazosin?",
+    "patient_snapshot": {
+      "demographics": {"age": 75, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 144, "dbp": 88}],
+      "symptoms": ["severe aortic stenosis"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Potent direct vasodilators without preload maintenance cause sudden cerebral and coronary hypoperfusion in fixed-orifice severe aortic stenosis.",
+    "contraindications": ["Cautious titration required in fixed LV outflow tract obstruction"]
+  },
+  {
+    "id": "CONTRA-009",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have history of recurrent angioedema with lip and tongue swelling from Enalapril. Is it safe for me to switch to Ramipril?",
+    "patient_snapshot": {
+      "demographics": {"age": 52, "sex": "male"},
+      "symptoms": ["ACE-inhibitor induced angioedema"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Prior angioedema to any ACE inhibitor is an absolute contraindication to all agents in the ACE inhibitor class.",
+    "contraindications": ["Absolute contraindication to entire ACE inhibitor class"]
+  },
+  {
+    "id": "CONTRA-010",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am 56 on Triamterene and Lisinopril. My doctor wants to add a potassium supplement 40 mEq daily. Is combining these safe?",
+    "patient_snapshot": {
+      "demographics": {"age": 56, "sex": "female"},
+      "current_medications": [{"drug": "Triamterene", "dosage": "37.5mg"}, {"drug": "Lisinopril", "dosage": "10mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Combining potassium supplements with potassium-sparing diuretics and ACE inhibitors markedly increases the hazard of severe hyperkalemia.",
+    "contraindications": ["Risk of life-threatening hyperkalemia"]
+  },
+  {
+    "id": "CONTRA-011",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am a 30-year-old female planning pregnancy. My BP is 142/90 on Valsartan 80mg. Should I change medication before conceiving?",
+    "patient_snapshot": {
+      "demographics": {"age": 30, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 142, "dbp": 90}],
+      "current_medications": [{"drug": "Valsartan", "dosage": "80mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ACOG 2024"],
+    "clinical_rationale": "Preconception counseling dictates discontinuing ACEi/ARBs/direct renin inhibitors and transitioning to pregnancy-safe alternatives (Labetalol, Nifedipine, Methyldopa).",
+    "contraindications": ["Preconception discontinuation of teratogenic agents"]
+  },
+  {
+    "id": "CONTRA-012",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have heart failure with reduced ejection fraction (EF 25%). Can I take Diltiazem or Verapamil to lower my blood pressure?",
+    "patient_snapshot": {
+      "demographics": {"age": 63, "sex": "male"},
+      "symptoms": ["heart failure with reduced ejection fraction", "EF 25%"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Non-dihydropyridine CCBs have negative inotropic actions that worsen heart failure outcomes in patients with HFrEF.",
+    "contraindications": ["Non-DHP CCB contraindicated in HFrEF"]
+  },
+  {
+    "id": "CONTRA-013",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I take Aliskiren for high blood pressure. Can I safely add Lisinopril if I have type 2 diabetes?",
+    "patient_snapshot": {
+      "demographics": {"age": 58, "sex": "male"},
+      "current_medications": [{"drug": "Aliskiren"}],
+      "symptoms": ["type 2 diabetes"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Concomitant use of Aliskiren with an ACE inhibitor or ARB in patients with diabetes is contraindicated due to increased risk of renal impairment, hyperkalemia, and hypotension (ALTITUDE trial).",
+    "contraindications": ["Aliskiren combination with ACEi/ARB contraindicated in diabetes"]
+  },
+  {
+    "id": "CONTRA-014",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have severe COPD with chronic CO2 retention. My BP is 150/92. Is Nadolol safe for my blood pressure?",
+    "patient_snapshot": {
+      "demographics": {"age": 69, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 150, "dbp": 92}],
+      "symptoms": ["severe COPD", "CO2 retention"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Non-cardioselective beta-blockers like Nadolol can cause severe bronchoconstriction and blunt responsiveness to beta-agonist bronchodilators.",
+    "contraindications": ["Non-selective beta-blockers avoided in severe bronchospastic disease"]
+  },
+  {
+    "id": "CONTRA-015",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have chronic liver cirrhosis with hepatic encephalopathy. My BP is 144/90. Should I take Methyldopa?",
+    "patient_snapshot": {
+      "demographics": {"age": 54, "sex": "male"},
+      "symptoms": ["cirrhosis", "hepatic disease"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Methyldopa is contraindicated in active hepatic disease due to drug-induced hepatitis and immune-mediated hepatic injury.",
+    "contraindications": ["Methyldopa contraindicated in active liver disease"]
+  },
+  {
+    "id": "CONTRA-016",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have a history of drug-induced lupus from Hydralazine. Can I restart Hydralazine for resistant hypertension?",
+    "patient_snapshot": {
+      "demographics": {"age": 61, "sex": "female"},
+      "symptoms": ["drug-induced lupus erythematosus"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Re-exposure to Hydralazine after documented drug-induced lupus is contraindicated.",
+    "contraindications": ["Re-challenge contraindicated"]
+  },
+  {
+    "id": "CONTRA-017",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have anuric end-stage kidney failure. Can Hydrochlorothiazide be used as primary monotherapy for my BP (156/94)?",
+    "patient_snapshot": {
+      "demographics": {"age": 55, "sex": "male"},
+      "symptoms": ["end-stage renal disease", "anuria"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Thiazide diuretics are ineffective monotherapy when eGFR is < 30 mL/min and completely ineffective in anuric renal failure; loop diuretics or ultrafiltration are required.",
+    "contraindications": ["Thiazide monotherapy ineffective in severe renal failure"]
+  },
+  {
+    "id": "CONTRA-018",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am 34 weeks pregnant with BP 150/98 on Methyldopa. Can I take Candesartan to get my numbers lower?",
+    "patient_snapshot": {
+      "demographics": {"age": 32, "sex": "female", "pregnancy_weeks": 34},
+      "recent_bp_readings": [{"sbp": 150, "dbp": 98}],
+      "current_medications": [{"drug": "Methyldopa", "dosage": "250mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ACOG 2024"],
+    "clinical_rationale": "Candesartan (ARB) is strictly contraindicated in the third trimester of pregnancy.",
+    "contraindications": ["ARBs contraindicated in pregnancy"]
+  },
+  {
+    "id": "CONTRA-019",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have sick sinus syndrome without a pacemaker, resting heart rate 42 bpm and BP 154/90. Is Metoprolol Succinate recommended?",
+    "patient_snapshot": {
+      "demographics": {"age": 73, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 154, "dbp": 90}],
+      "symptoms": ["sick sinus syndrome", "sinus bradycardia"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Beta-blockers are contraindicated in sick sinus syndrome and severe sinus bradycardia in the absence of a functioning ventricular pacemaker.",
+    "contraindications": ["Beta-blockers contraindicated in severe bradycardia/SSS"]
+  },
+  {
+    "id": "CONTRA-020",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I take lithium for bipolar disorder. My doctor wants to start Hydrochlorothiazide 25mg for BP. Is there a dangerous drug interaction?",
+    "patient_snapshot": {
+      "demographics": {"age": 48, "sex": "female"},
+      "current_medications": [{"drug": "Lithium carbonate", "dosage": "900mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Thiazide diuretics reduce renal clearance of lithium by 30-50%, provoking severe lithium toxicity; combination requires extreme caution and therapeutic drug monitoring.",
+    "contraindications": ["High-risk drug interaction between thiazides and lithium"]
+  },
+  {
+    "id": "CONTRA-021",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have acute decompensated heart failure with pulmonary congestion and cold extremities. Should I be started on high-dose beta-blocker therapy right now?",
+    "patient_snapshot": {
+      "demographics": {"age": 64, "sex": "male"},
+      "symptoms": ["acute decompensated heart failure", "pulmonary congestion"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Initiating or uptitrating beta-blockers during acute hemodynamic decompensation worsens cardiogenic shock and pulmonary edema; patients must be euvolemic before initiation.",
+    "contraindications": ["Beta-blocker initiation contraindicated during active hemodynamic decompensation"]
+  },
+  {
+    "id": "CONTRA-022",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have primary hyperaldosteronism with bilateral adrenal hyperplasia. My BP is 156/94 and potassium 3.1. Which targeted MRA is preferred?",
+    "patient_snapshot": {
+      "demographics": {"age": 47, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 156, "dbp": 94}],
+      "symptoms": ["primary hyperaldosteronism", "hypokalemia"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Mineralocorticoid receptor antagonists (Spironolactone or Eplerenone) are the specific targeted first-line medical therapy for bilateral primary aldosteronism.",
+    "contraindications": []
+  },
+  {
+    "id": "CONTRA-023",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am 16 weeks pregnant with blood pressure 152/98 on no medication. Is Labetalol considered safe for chronic hypertension in pregnancy?",
+    "patient_snapshot": {
+      "demographics": {"age": 29, "sex": "female", "pregnancy_weeks": 16},
+      "recent_bp_readings": [{"sbp": 152, "dbp": 98}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ACOG 2024", "AHA/ACC 2025"],
+    "clinical_rationale": "Oral Labetalol is established as first-line safe pharmacotherapy for managing hypertension in pregnant patients.",
+    "contraindications": []
+  },
+  {
+    "id": "CONTRA-024",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am a 60-year-old on Warfarin for atrial fibrillation. Does starting Amlodipine have any major anticoagulant CYP interactions compared to Diltiazem?",
+    "patient_snapshot": {
+      "demographics": {"age": 60, "sex": "male"},
+      "current_medications": [{"drug": "Warfarin", "dosage": "5mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Diltiazem and Verapamil are potent CYP3A4 inhibitors that increase warfarin levels and bleeding risk; Amlodipine has significantly less CYP3A4 inhibitory potency.",
+    "contraindications": []
+  },
+  {
+    "id": "CONTRA-025",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have pheochromocytoma and my BP is 190/110. Why must alpha-blockers be administered before beta-blockers?",
+    "patient_snapshot": {
+      "demographics": {"age": 42, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 190, "dbp": 110}],
+      "symptoms": ["pheochromocytoma"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Unopposed alpha-1 stimulation: administering beta-blockers prior to alpha blockade leads to catastrophic vasoconstriction and hypertensive crisis.",
+    "contraindications": ["Beta-blockers alone are contraindicated in unblocked pheochromocytoma"]
+  },
+  {
+    "id": "CONTRA-026",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am 36 weeks pregnant. My BP is 156/98 mmHg. Is extended-release Nifedipine safe in pregnancy?",
+    "patient_snapshot": {
+      "demographics": {"age": 33, "sex": "female", "pregnancy_weeks": 36},
+      "recent_bp_readings": [{"sbp": 156, "dbp": 98}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ACOG 2024", "AHA/ACC 2025"],
+    "clinical_rationale": "Extended-release Nifedipine is an approved first-line oral dihydropyridine calcium channel blocker for pregnancy-induced hypertension and preeclampsia.",
+    "contraindications": []
+  },
+  {
+    "id": "CONTRA-027",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I take Digoxin for heart failure and Hydrochlorothiazide for BP. Why does diuretic-induced hypokalemia increase digoxin toxicity?",
+    "patient_snapshot": {
+      "demographics": {"age": 70, "sex": "female"},
+      "current_medications": [{"drug": "Digoxin", "dosage": "0.125mg"}, {"drug": "Hydrochlorothiazide", "dosage": "25mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "MedlinePlus"],
+    "clinical_rationale": "Hypokalemia enhances digoxin binding to the myocardial Na+/K+-ATPase, potentiating fatal cardiac arrhythmias.",
+    "contraindications": ["Hypokalemia enhances digitalis toxicity"]
+  },
+  {
+    "id": "CONTRA-028",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have Raynaud phenomenon with white, painful fingers in cold weather and high BP (146/92). Which blood pressure class improves both?",
+    "patient_snapshot": {
+      "demographics": {"age": 38, "sex": "female"},
+      "recent_bp_readings": [{"sbp": 146, "dbp": 92}],
+      "symptoms": ["Raynaud phenomenon"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025"],
+    "clinical_rationale": "Dihydropyridine CCBs (Amlodipine, Nifedipine) are the drug of choice for Raynaud phenomenon and hypertension; beta-blockers are contraindicated as they exacerbate peripheral vasospasm.",
+    "contraindications": ["Beta-blockers can worsen Raynaud phenomenon vasospasm"]
+  },
+  {
+    "id": "CONTRA-029",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I have severe peripheral artery disease with intermittent claudication and BP 152/90. Why are non-selective beta-blockers avoided in severe PAD?",
+    "patient_snapshot": {
+      "demographics": {"age": 66, "sex": "male"},
+      "recent_bp_readings": [{"sbp": 152, "dbp": 90}],
+      "symptoms": ["severe peripheral artery disease", "claudication"]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["AHA/ACC 2025", "ESC/ESH 2024"],
+    "clinical_rationale": "Non-selective beta-blockers leave vascular alpha-1 receptors unopposed, worsening peripheral vasoconstriction and limb ischemia.",
+    "contraindications": []
+  },
+  {
+    "id": "CONTRA-030",
+    "subset": "complex_comorbid_contraindications",
+    "query": "I am 31 years old and 10 weeks pregnant with chronic hypertension (148/94). My previous doctor prescribed Atenolol. Should I continue Atenolol?",
+    "patient_snapshot": {
+      "demographics": {"age": 31, "sex": "female", "pregnancy_weeks": 10},
+      "recent_bp_readings": [{"sbp": 148, "dbp": 94}],
+      "current_medications": [{"drug": "Atenolol", "dosage": "50mg"}]
+    },
+    "soft_ask_count": 0,
+    "expected_action": "ANSWER",
+    "expected_citations": ["ACOG 2024", "AHA/ACC 2025"],
+    "clinical_rationale": "Atenolol is associated with intrauterine fetal growth restriction (FGR) and low birth weight when used early in pregnancy; should switch to Labetalol.",
+    "contraindications": ["Atenolol associated with fetal growth restriction"]
+  }
+]

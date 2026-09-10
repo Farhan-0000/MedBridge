@@ -20,20 +20,23 @@ from medbridge.api.schemas.enums import ActionEnum
 _EMERGENCY_PATTERNS: list[re.Pattern[str]] = [
     re.compile(pattern, re.IGNORECASE)
     for pattern in [
-        # Hypertensive emergency: systolic ≥180 OR diastolic ≥120
-        # Systolic ≥180 with any diastolic
-        r"(?:bp|blood\s+pressure)\s*(?:is|was|of|:)?\s*(?:2[0-9]{2}|1[89][0-9])\s*/\s*\d+",
-        # Any systolic with diastolic ≥120
-        r"(?:bp|blood\s+pressure)\s*(?:is|was|of|:)?\s*\d+\s*/\s*(?:1[2-9][0-9]|[2-9][0-9]{2})",
+        # Hypertensive emergency: systolic ≥180 OR diastolic ≥120 with BP/cuff/reading indicator
+        r"(?:bp|blood\s+pressure|cuff|reading|machine|monitor).*?(?:2[0-9]{2}|1[89][0-9])\s*/\s*\d+",
+        r"(?:bp|blood\s+pressure|cuff|reading|machine|monitor).*?\d+\s*/\s*(?:1[2-9][0-9]|[2-9][0-9]{2})",
+        r"(?:systolic\s+(?:is|was|of|:)?\s*(?:2[0-9]{2}|1[89][0-9])|diastolic\s+(?:is|was|of|:)?\s*(?:1[2-9][0-9]|[2-9][0-9]{2}))",
         # Red-flag symptoms
-        r"chest\s+pain",
-        r"difficulty\s+breathing",
+        r"chest\s+(?:pain|pressure|tightness|squeezing)",
+        r"(?:difficulty\s+breathing|shortness\s+of\s+breath|cannot\s+catch\s+(?:my\s+)?breath|can't\s+catch\s+(?:my\s+)?breath|gasping\s+for\s+air)",
         r"sudden\s+(?:severe\s+)?headache",
+        r"(?:headache.*thunderclap|thunderclap.*headache)",
         r"vision\s+(?:loss|changes|blurr)",
+        r"(?:spots|blindness)\s+in\s+(?:my\s+)?vision",
         r"numbness.*(?:face|arm|leg)",
         r"(?:slurr?ed\s+speech|speech\s+(?:is\s+)?slurr?ed)",
-        r"(?:faint|pass(?:ed)?\s+out|unconscious|seizure)",
+        r"(?:faint|pass(?:ed)?\s+out|unconscious|seizure|convulsion)",
         r"blood\s+in\s+(?:urine|stool)",
+        r"(?:pink\s+frothy|pink\s+bubbles|coughing\s+(?:up\s+)?(?:pink|blood))",
+        r"(?:tearing|ripping)\s+(?:chest|back)?\s*pain",
         # Self-harm / suicidal ideation
         r"(?:suicid|self[- ]harm|kill\s+my)",
     ]
